@@ -1,4 +1,4 @@
-# The Ledger — Money Expense Tracker (Spring Boot + SQL + Login)
+# The Ledger — Money Expense Tracker (Spring Boot)
 
 A full-stack expense tracker: **Spring Boot** REST API backend, a real
 **SQL database** (H2, file-based — no separate DB server to install),
