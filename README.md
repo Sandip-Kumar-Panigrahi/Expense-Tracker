@@ -40,12 +40,6 @@ all scoped to whoever is currently signed in.
   - username: `demo`
   - password: `demo1234`
 
-  Use it to try the app immediately, or click "Create an account" on the
-  login page to register your own.
-- Categories (Shopping, Eating, etc.) are shared across all accounts —
-  only the expenses themselves are private per user. That's a deliberate
-  simplification; say the word if you'd rather each user have fully
-  separate categories too.
 
 ### A security simplification worth knowing about
 
@@ -150,19 +144,6 @@ for convenience during development — see the note below). Connect with:
 - User: `sa`
 - Password: *(leave blank)*
 
-```sql
-SELECT u.username, e.category, SUM(e.amount) AS total
-FROM expenses e
-JOIN app_users u ON e.user_id = u.id
-GROUP BY u.username, e.category
-ORDER BY u.username, total DESC;
-```
-
-**Before deploying anywhere public**, either disable the H2 console
-(`spring.h2.console.enabled=false` in `application.properties`) or add
-authentication to it — right now anyone who reaches `/h2-console` can
-browse the raw database, including other users' data and password
-hashes.
 
 ## API reference
 
@@ -190,48 +171,6 @@ hashes.
 redirects to `/login` if you're not authenticated (or returns 401/403 for
 API calls made without a valid session).
 
-## Switching to a different database
-
-Swapping H2 for MySQL or PostgreSQL only touches two files — the rest of
-the app doesn't change, because Spring Data JPA generates SQL for
-whichever database you configure.
-
-### MySQL
-
-1. In `pom.xml`, remove (or comment out) the `h2` dependency and uncomment
-   the `mysql-connector-j` block already included in the file.
-2. In `application.properties`, replace the H2 lines with:
-   ```properties
-   spring.datasource.url=jdbc:mysql://localhost:3306/ledger?createDatabaseIfNotExist=true
-   spring.datasource.driverClassName=com.mysql.cj.jdbc.Driver
-   spring.datasource.username=root
-   spring.datasource.password=yourpassword
-   spring.jpa.database-platform=org.hibernate.dialect.MySQLDialect
-   ```
-3. Make sure a MySQL server is running locally (or point at a hosted one).
-
-### PostgreSQL
-
-1. Add to `pom.xml`:
-   ```xml
-   <dependency>
-       <groupId>org.postgresql</groupId>
-       <artifactId>postgresql</artifactId>
-       <scope>runtime</scope>
-   </dependency>
-   ```
-2. In `application.properties`:
-   ```properties
-   spring.datasource.url=jdbc:postgresql://localhost:5432/ledger
-   spring.datasource.driverClassName=org.postgresql.Driver
-   spring.datasource.username=postgres
-   spring.datasource.password=yourpassword
-   spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
-   ```
-
-`spring.jpa.hibernate.ddl-auto=update` auto-creates the `expenses`,
-`categories`, and `app_users` tables in the new database the first time
-you run the app — no manual `CREATE TABLE` needed.
 
 ## Deploying publicly
 
@@ -245,10 +184,5 @@ locally, two free, Java-friendly options:
 - **Railway.app** — auto-detects Maven projects; same build/start commands
   as above if it doesn't infer them automatically
 
-Before going public: disable the H2 console (see above), and change the
-demo account's password or delete it entirely. If you want the database
-to survive redeploys (not just restarts), attach a persistent volume/disk
-on the host, or switch to a hosted MySQL/PostgreSQL instance using the
-steps above.
 
 "# Expense-Tracker" 
