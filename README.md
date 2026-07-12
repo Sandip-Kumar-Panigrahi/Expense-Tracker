@@ -169,7 +169,7 @@ for convenience during development — see the note below). Connect with:
 
 `date` must be `yyyy-MM-dd`. All responses are JSON. Any "Yes" route
 redirects to `/login` if you're not authenticated (or returns 401/403 for
-API calls made without a valid session).
+API calls made without a valid session)..
 
 
 ## Deploying publicly
